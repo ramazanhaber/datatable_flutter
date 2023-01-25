@@ -58,6 +58,11 @@ class _DatatableContentState extends State<DatatableContent> {
         print(text+"->"+key.toString()+"-> "+value.toString());
       }
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 1),
+      content: Text(text),
+    ));
   }
 
     @override
@@ -73,15 +78,17 @@ class _DatatableContentState extends State<DatatableContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Listener(
-        onPointerDown: (PointerDownEvent details) {
-          onPointerDown(details);
-        },
+    return Scaffold(
+      body: Material(
+        child: Listener(
+          onPointerDown: (PointerDownEvent details) {
+            onPointerDown(details);
+          },
 
-        child: Container(
-          child: ListView(
-            children: [_createDataTable()],
+          child: Container(
+            child: ListView(
+              children: [_createDataTable()],
+            ),
           ),
         ),
       ),
@@ -121,7 +128,8 @@ class _DatatableContentState extends State<DatatableContent> {
       ),
       DataColumn(label: Text('Book')),
       DataColumn(label: Text('Author')),
-      DataColumn(label: Text('Category'))
+      DataColumn(label: Text('Category')),
+      DataColumn(label: Text('SİL'))
     ];
   }
 
@@ -134,7 +142,10 @@ class _DatatableContentState extends State<DatatableContent> {
             DataCell(Text('#' + book['id'].toString())),
             DataCell(Text(book['title'])),
             DataCell(Text(book['author'])),
-            DataCell(FlutterLogo())
+            DataCell(FlutterLogo()),
+            DataCell(ElevatedButton(onPressed: () {
+              mesajYaz( book['id'].toString());
+            },child: Text("SİL"),)),
           ],
           selected: _selected[index],
 
