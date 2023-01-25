@@ -17,6 +17,10 @@ class _DatatableContentState extends State<DatatableContent> {
     {'id': 100, 'title': 'Flutter Basics', 'author': 'David John'},
     {'id': 102, 'title': 'Git and GitHub', 'author': 'Merlin Nick'},
     {'id': 101, 'title': 'Flutter Basics', 'author': 'David John'},
+    {'id': 103, 'title': 'Flutter Basics3', 'author': 'David John3'},
+    {'id': 104, 'title': 'Flutter Basics4', 'author': 'David John4'},
+    {'id': 105, 'title': 'Flutter Basics5', 'author': 'David John5'},
+    {'id': 106, 'title': 'Flutter Basics6', 'author': 'David John6'},
   ];
 
   // Callback when mouse clicked on `Listener` wrapped widget.
@@ -84,13 +88,37 @@ class _DatatableContentState extends State<DatatableContent> {
     );
   }
 
+  int _currentSortColumn = 0;
+  bool _isAscending = true;
+
   DataTable _createDataTable() {
-    return DataTable(columns: _createColumns(), rows: _createRows());
+    return DataTable(
+        sortColumnIndex: _currentSortColumn,
+        sortAscending: _isAscending,
+        columns: _createColumns(), rows: _createRows());
   }
 
   List<DataColumn> _createColumns() {
     return [
-      DataColumn(label: Text('ID')),
+      DataColumn(label: Text('ID'),
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                // sort the product list in Ascending, order by Price
+                _books.sort((productA, productB) =>
+                    productB['id'].compareTo(productA['id']));
+              } else {
+                _isAscending = true;
+                // sort the product list in Descending, order by Price
+                _books.sort((productA, productB) =>
+                    productA['id'].compareTo(productB['id']));
+              }
+            });
+          },
+
+      ),
       DataColumn(label: Text('Book')),
       DataColumn(label: Text('Author')),
       DataColumn(label: Text('Category'))
