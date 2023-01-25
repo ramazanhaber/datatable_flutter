@@ -12,6 +12,9 @@ class DatatableContent extends StatefulWidget {
 
 class _DatatableContentState extends State<DatatableContent> {
   List<bool> _selected = [];
+  List<Map> _booksFiltered = [];
+  TextEditingController controller = TextEditingController();
+  String _searchResult = '';
 
   List<Map> _books = [
     {'id': 100, 'title': 'Flutter Basics', 'author': 'David John'},
@@ -74,6 +77,8 @@ class _DatatableContentState extends State<DatatableContent> {
     _books.forEach((element) {
       _selected.add(false);
     });
+
+    _booksFiltered = _books;
   }
 
   @override
@@ -87,9 +92,37 @@ class _DatatableContentState extends State<DatatableContent> {
 
           child: Container(
             child: ListView(
-              children: [_createDataTable()],
+              children: [searchWidget(),_createDataTable()],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget searchWidget(){
+    return  Card(
+      child: new ListTile(
+        leading: new Icon(Icons.search),
+        title: new TextField(
+            controller: controller,
+            decoration: new InputDecoration(
+                hintText: 'Search', border: InputBorder.none),
+            onChanged: (value) {
+              setState(() {
+                _searchResult = value;
+                _booksFiltered = _books.where((user) => user["title"].contains(_searchResult) || user["author"].contains(_searchResult)).toList();
+              });
+            }),
+        trailing: new IconButton(
+          icon: new Icon(Icons.cancel),
+          onPressed: () {
+            setState(() {
+              controller.clear();
+              _searchResult = '';
+              _booksFiltered = _books;
+            });
+          },
         ),
       ),
     );
@@ -136,7 +169,7 @@ class _DatatableContentState extends State<DatatableContent> {
   List<DataRow> _createRows() {
     List<DataRow> listem = [];
 
-    _books.asMap().forEach((index, book) {
+    _booksFiltered.asMap().forEach((index, book) {
       var row = DataRow(
           cells: [
             DataCell(Text('#' + book['id'].toString())),
